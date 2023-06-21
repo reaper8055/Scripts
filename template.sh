@@ -85,42 +85,67 @@ trap 'catch $? $LINENO' EXIT
 function catch() {
   if [ "$1" != "0" ]
   then
-    printf "${Red}[ERROR]: ${Yellow}Error ${BRed}$1 ${Yellow}occurred on ${BRed}$2\n"
+    printf "${White}[ERROR]: ${Red}Error ${BRed}%s ${Red}occurred on ${BRed}%s\n" "$1" "$2"
   fi
 }
 
+# customLogger() takes two argement to run successfully. The 3rd and 4th
+# argument to the function are optional i.e when none provided they default to
+# ${White} for the severityLevelColor and ${BWhite} for the msgColor.
+#
+# $1:severityLevel
+# First argument to the function i.e $1 can be any one of the following:
+#   0 EMERGENCY
+#   1 ALERT
+#   2 CRITICAL
+#   3 ERROR
+#   4 WARN
+#   5 NOTICE
+#   6 INFO
+#   7 DEBUG
+# NOTE: Failing to specificy any of the above will call customLogger() function.
+# 
+# $2:msg
+# Second argument to the function i.e $2 is the message you want to print to
+# stdout. It can be any string and it **should not** end with a new line
+# characther "\n".
+#
+# $3:severityLevelColor, $4:msgColor can be any of the above colors variable in
+# line 3 to 74.
 function customLogger() {(
+  set -e
+
   if [ -z "$1" ]; then
-    printf "${Red}[ERROR]: ${White}missing positional argument ${BRed}'$1' ${White}for print()\n" 
+    printf "${White}[ERROR]: ${Red}missing first positional argument to customLogger(): ${BRed}%s\n" '$1 is empty'
     exit 1
   fi
 
   if [ -z "$2" ]; then
-    printf "${Red}[ERROR]: ${White}missing positional argument ${BRed}'$2' ${White}for print()\n" 
+    printf "${White}[ERROR]: ${Red}missing second positional argument to customLogger(): ${BRed}%s\n" '$2 is empty'
     exit 1
   fi
 
   if [ -z "$3" ]; then
-    printf "${Red}[ERROR]: ${White}missing positional argument ${BRed}'$3' ${White}for print()\n" 
-    severityLevelColor=$BWhite
+    printf "${White}[WARN]: ${Yellow}missing third positional argument to customLogger(): ${BYellow}%s\n" '$3 is empty'
+    severityLevelColor="$White"
   else
-    severityLevelColor=$3
+    severityLevelColor="$3"
   fi
 
-  if [ -z "$3" ]; then
-    printf "${Red}[ERROR]: ${White}missing positional argument ${BRed}'$4' ${White}for print()\n" 
-    msgColor=$White
+  if [ -z "$4" ]; then
+    printf "${White}[WARN]: ${Yellow}missing forth positional argument to customLogger(): ${BYellow}%s\n" '$4 is empty'
+    msgColor="$BWhite"
   else
-    msgColor=$4
+    msgColor="$4"
   fi
 
-  severityLevel=$1
-  msg=$2
+  severityLevel="$1"
+  msg="$2"
 
-  printf "$severityLevelColor[$severityLevel]: $msgColor$msg\n"
+  printf "${severityLevelColor}[%s]: ${msgColor}%s\n" "$severityLevel" "$msg"
 )}
 
-# print() takes two argement to run successfully.
+# logger() takes two argement to run successfully.
 #
 # $1:severityLevel
 # First argument to the function i.e $1 can be any one of the following:
@@ -141,37 +166,38 @@ function customLogger() {(
 function logger() {(
   set -e
 
+  # fail if positional argument either $1 or $2 are not provided.
   if [ -z "$1" ]; then
-      printf "${Red}[ERROR]: ${White}missing positional argument ${BRed}\$1 ${White}for print()\n" 
-      exit 1
+    printf "${White}[ERROR]: ${Red}missing first positional argument for logger(): %s\n" '$1 is empty'
+    exit 1
   fi
 
   if [ -z "$2" ]; then
-      printf "${Red}[ERROR]: ${White}missing positional argument ${BRed}\$2 ${White}for print()\n" 
-      exit 1
+    printf "${White}[ERROR]: ${Red}missing second positional argument to logger(): %s\n" '$2 is empty'
+    exit 1
   fi
 
-  severityLevel=$1
-  msg=$2
+  severityLevel="$1"
+  msg="$2"
 
   case $severityLevel in
-    "ERROR"|"3")
-      printf "${IRed}[ERROR]: ${White}$msg\n"
+    'ERROR'|'3')
+      printf "${White}[ERROR]: ${Red}%s\n" "$msg"
       ;;
-    "WARN"|"4")
-      printf "${BYellow}[WARN]: ${White}$msg\n"
+    'WARN'|'4')
+      printf "${White}[WARN]: ${Yellow}%s\n" "$msg"
       ;;
-    "NOTICE"|"5")
-      printf "${Green}[NOTICE]: ${White}$msg\n" 
+    'NOTICE'|'5')
+      printf "${White}[NOTICE]: ${IGreen}%s\n" "$msg"
       ;;
-    "INFO"|"6")
-      printf "${BGreen}[INFO]: ${White}$msg\n"
+    'INFO'|'6')
+      printf "${White}[INFO]: ${BGreen}%s\n" "$msg"
       ;;
-    "DEBUG"|"7")
-      printf "${Blue}[DEBUG]: ${White}$msg\n"
+    'DEBUG'|'7')
+      printf "${White}[DEBUG]: ${Blue}%s\n" "$msg"
       ;;
     *)
-      customLogger $1 $2 $3 $4
+      customLogger "$1" "$2" "$3" "$4"
       ;;
   esac
 )}
