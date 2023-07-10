@@ -82,6 +82,10 @@ On_IWhite='\033[0;107m'   # White
 set -eo pipefail
 trap 'catch $? $LINENO' EXIT
 
+function resetColors() {
+  tput sgr0
+}
+
 function catch() {
   if [ "$1" != "0" ]
   then
