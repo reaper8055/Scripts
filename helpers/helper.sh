@@ -89,7 +89,7 @@ function resetColors() {
 function catch() {
   if [ "$1" != "0" ]
   then
-    printf "${White}[ERROR]: ${Red}Error ${BRed}%s ${Red}occurred on ${BRed}%s\n" "$1" "$2"
+    printf "${Red}[ERROR]: ${White}Error ${BRed}%s ${White}occurred on ${BRed}%s\n" "$1" "$2"
     resetColors
   fi
 }
@@ -119,19 +119,19 @@ function catch() {
 # line 3 to 74.
 function customLogger() {
   if [ -z "$1" ]; then
-    printf "${White}[ERROR]: ${Red}missing first positional argument to customLogger(): ${BRed}%s\n" '$1 is empty'
+    printf "${BRed}[ERROR]: ${White}missing first positional argument to customLogger(): ${Red}%s\n" '$1 is empty'
     resetColors
     exit 1
   fi
 
   if [ -z "$2" ]; then
-    printf "${White}[ERROR]: ${Red}missing second positional argument to customLogger(): ${BRed}%s\n" '$2 is empty'
+    printf "${BRed}[ERROR]: ${White}missing second positional argument to customLogger(): ${Red}%s\n" '$2 is empty'
     resetColors
     exit 1
   fi
 
   if [ -z "$3" ]; then
-    printf "${White}[WARN]: ${Yellow}missing third positional argument to customLogger(): ${BYellow}%s\n" '$3 is empty'
+    printf "${BYellow}[WARN]: ${White}missing third positional argument to customLogger(): ${Yellow}%s\n" '$3 is empty'
     resetColors
     severityLevelColor="$White"
   else
@@ -139,7 +139,7 @@ function customLogger() {
   fi
 
   if [ -z "$4" ]; then
-    printf "${White}[WARN]: ${Yellow}missing forth positional argument to customLogger(): ${BYellow}%s\n" '$4 is empty'
+    printf "${BYellow}[WARN]: ${White}missing forth positional argument to customLogger(): ${Yellow}%s\n" '$4 is empty'
     resetColors
     msgColor="$BWhite"
   else
@@ -176,13 +176,13 @@ function customLogger() {
 function logger() {
   # fail if positional argument either $1 or $2 are not provided.
   if [ -z "$1" ]; then
-    printf "${White}[ERROR]: ${Red}missing first positional argument for logger(): %s\n" '$1 is empty'
+    printf "${BRed}[ERROR]: ${White}missing first positional argument for logger(): ${Red}%s\n" '$1 is empty'
     resetColors
     exit 1
   fi
 
   if [ -z "$2" ]; then
-    printf "${White}[ERROR]: ${Red}missing second positional argument to logger(): %s\n" '$2 is empty'
+    printf "${BRed}[ERROR]: ${White}missing second positional argument to logger(): ${Red}%s\n" '$2 is empty'
     resetColors
     exit 1
   fi
@@ -192,23 +192,23 @@ function logger() {
 
   case $severityLevel in
     'ERROR'|'3')
-      printf "${White}[ERROR]: ${Red}%s\n" "$msg"
+      printf "${BRed}[ERROR]: ${White}%s\n" "$msg"
       resetColors
       ;;
     'WARN'|'4')
-      printf "${White}[WARN]: ${Yellow}%s\n" "$msg"
+      printf "${BYellow}[WARN]: ${White}%s\n" "$msg"
       resetColors
       ;;
     'NOTICE'|'5')
-      printf "${White}[NOTICE]: ${IGreen}%s\n" "$msg"
+      printf "${IGreen}[NOTICE]: ${White}%s\n" "$msg"
       resetColors
       ;;
     'INFO'|'6')
-      printf "${White}[INFO]: ${BGreen}%s\n" "$msg"
+      printf "${BGreen}[INFO]: ${White}%s\n" "$msg"
       resetColors
       ;;
     'DEBUG'|'7')
-      printf "${White}[DEBUG]: ${Blue}%s\n" "$msg"
+      printf "${Blue}[DEBUG]: ${White}%s\n" "$msg"
       resetColors
       ;;
     *)
