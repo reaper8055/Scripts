@@ -7,8 +7,8 @@ setTempDirectoryName 'zellij-temp'
 logger 6 'tmp directory setup successful...'
 
 logger 6 'changing to tmp directory'
-cd $HOME/Downloads/$tmpDirectoryName
-logger 6 'working from $PWD'
+cd "$HOME/Downloads/$tempDirectoryName"
+logger 6 "working from $PWD"
 logger 6 'downloading zellij'
 pkg=$(wget -nv https://github.com/zellij-org/zellij/releases/download/v0.37.2/zellij-x86_64-unknown-linux-musl.tar.gz 2>&1 | cut -d\" -f2)
 [ $? -eq 0 ] && logger 6 'download successful...'

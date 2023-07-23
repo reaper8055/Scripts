@@ -239,7 +239,7 @@ tempDirectoryName='my_temp_directory'
 
 function setTempDirectoryName(){
   if [ -z "$1" ]; then
-    logger 3 'missing first positional argument to setTempDirectoryName()'
+    logger 3 "missing first positional argument to setTempDirectoryName()"
     exit 1
   fi
 
@@ -248,24 +248,24 @@ function setTempDirectoryName(){
 
 function setupTempDirectory() {
   if [ -z "$1" ]; then
-    logger 3 'missing first positional argument to setupTmpDirectory()'
+    logger 3 "missing first positional argument to setupTempDirectory()"
     exit 1
   fi
 
   cd "$HOME/Downloads"
-  logger 5 'removing existing temp directory if any'
+  logger 5 "removing existing temp directory if any"
   if [ -d "$HOME/Downloads/$1" ]; then 
     if  [ ! "${rm -rf $HOME/Downloads/$1}" ]; then
-      logger 3 'unable to remove existing temp directory: $HOME/Downloads/$1'
-      logger 5 'please remove the directory manually and run the script again!'
-      logger 5 'exiting'
+      logger 3 "unable to remove existing temp directory: $HOME/Downloads/$1"
+      logger 5 "please remove the directory manually and run the script again!"
+      logger 5 "exiting ..."
       exit 1
     fi
-    logger 5 'successfully removed existing temp directory: $HOME/Downloads/$1'
+    logger 5 "successfully removed existing temp directory: $HOME/Downloads/$1"
   fi
-  logger 5 'Creating new temp directory: $HOME/Downloads/$1'
+  logger 5 "Creating new temp directory: $HOME/Downloads/$1"
   if [ ! "${mkdir $HOME/Downloads/$1}" ]; then
-    logger 3 'failed creating temporary directory: $HOME/Downloads/$1'
+    logger 3 "failed creating temporary directory: $HOME/Downloads/$1"
     exit 1
   fi
   return 0
@@ -273,29 +273,29 @@ function setupTempDirectory() {
 
 function cleanupTempDirectory() {
   if [ -z "$1" ]; then
-    logger 3 'missing first positional argument to cleanupTempDirectory()'
+    logger 3 "missing first positional argument to cleanupTempDirectory()"
     exit 1
   fi
 
   if [ ! -d "$HOME/Downloads/$1" ]; then
-    logger 3 '$HOME/Downloads/$1: No such file or directory'
-    logger 5 'exiting... '
+    logger 3 "$HOME/Downloads/$1: No such file or directory"
+    logger 5 "exiting... "
     exit 1
   fi
-  logger 5 'cleaning up $HOME/Downloads/$1'
+  logger 5 "cleaning up $HOME/Downloads/$1"
   if [ ! "${rm -rf $HOME/Downloads/$1}" ]; then
-    logger 3 'failed to remove $HOME/Downloads/$1'
-    logger 5 'please try to remove $HOME/Downloads/$1 manually'
-    logger 5 'exiting ...'
+    logger 3 "failed to remove $HOME/Downloads/$1"
+    logger 5 "please try to remove $HOME/Downloads/$1 manually"
+    logger 5 "exiting ..."
     exit 1
   fi
-  logger 5 'cleanup successfull :)'
+  logger 5 "cleanup successfull :)"
   return 0
 }
 
 function install() {
   if [ -z "$1" ]; then
-    logger 3 'missing first positional argument to install()'
+    logger 3 "missing first positional argument to install()"
     exit 1
   fi
 
@@ -309,32 +309,32 @@ function install() {
   fi
 
   if [ ! "$isDotDebFile" ]; then
-    logger 5 '$1 is not a .deb file'
-    logger 4 '$1 is not installed!'
-    logger 5 'installing $1 ...'
+    logger 5 "$1 is not a .deb file"
+    logger 4 "$1 is not installed!"
+    logger 5 "installing $1 ..."
     if [ ! "${sudo apt-get install $1}" ]; then
-      logger 3 'failed to installed $1'
-      logger 5 'exiting ...'
+      logger 3 "failed to installed $1"
+      logger 5 "exiting ..."
       exit 1
     fi
-    logger 5 'successfully installed $1 :)'
+    logger 5 "successfully installed $1 :)"
     return 0
   fi
 
-  logger 5 '$1 is a .deb file'
+  logger 5 "$1 is a .deb file"
   if [ ! -f "./$1" ]; then
-    logger 3 '$1 no such file or directory!'
-    logger 5 'exiting ...'
+    logger 3 "$1 no such file or directory!"
+    logger 5 "exiting ..."
     exit 1
   fi
 
-  logger 5 'Installing $1'
+  logger 5 "Installing $1"
   if [ ! "${sudo apt-get install ./$1}" ]; then
-    logger 3 'failed to installed $1'
-    logger 5 'exiting ...'
+    logger 3 "failed to installed $1"
+    logger 5 "exiting ..."
     exit 1
   fi
-  logger 5 'successfully installed $1 :)'
+  logger 5 "successfully installed $1 :)"
   return 0
 }
 
