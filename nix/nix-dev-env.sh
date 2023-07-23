@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-nixShellFile="$HOME/Projects/nix/shell.nix"
-envrcFile="$HOME/Projects/nix/envrc"
+[ -f "$HOME/Projects/scripts/nix/shell.nix" ] && nixShellFile="$HOME/Projects/scripts/nix/shell.nix"
+[ -f "$HOME/Projects/scripts/nix/envrc" ] && envrcFile="$HOME/Projects/scripts/nix/envrc"
 
 function nixinit() {
   printf "You are in %s, do you want to proceed?\n" "$PWD"

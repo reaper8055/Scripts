@@ -222,41 +222,79 @@ function logger() {(
   esac
 )}
 
-tmpDirectoryName='zellij-tmp'
+# To use setup_tmp_directory and cleanup_tmp_directory, set your tmp directory
+# name by replacng the value after equal(=) sign below:
 
-function setup_tmp_directory(){(
-  set -e
+tempDirectoryName='my_temp_directory'
 
+function setTempDirectoryName(){
   if [ -z "$1" ]; then
-    logger 3 'missing first positional argument to setup_tmp_directory()'
+    logger 3 'missing first positional argument to setTempDirectoryName()'
+    exit 1
+  fi
+
+  tempDirectoryName="$1"
+}
+
+function setupTempDirectory() {
+  if [ -z "$1" ]; then
+    logger 3 'missing first positional argument to setupTmpDirectory()'
     exit 1
   fi
 
   cd $HOME/Downloads
-  [ -d "$HOME/Downloads/$1" ] && rm -rf $HOME/Downloads/$1
-  mkdir $HOME/Downloads/$1
-)}
+  logger 5 'removing existing temp directory if any'
+  if [ -d "$HOME/Downloads/$1" ]; then 
+    rm -rf "$HOME/Downloads/$1"
+    if [ "$?" -ne 0 ]; then
+      logger 3 'unable to remove existing temp directory: $HOME/Downloads/$1'
+      logger 5 'please remove the directory manually and run the script again!'
+      logger 5 'exiting'
+      exit 1
+    fi
+    logger 5 'successfully removed existing temp directory: $HOME/Downloads/$1'
+  fi
+  logger 5 'Creating new temp directory: $HOME/Downloads/$1'
+  mkdir "$HOME/Downloads/$1"
+  if [ "$?" -ne 0 ]; then
+    logger 3 'failed creating temporary directory: $HOME/Downloads/$1'
+    exit 1
+  fi
+  return 0
+}
 
-function cleanup_tmp_directory(){(
-  set -e
-
+function cleanupTempDirectory() {
   if [ -z "$1" ]; then
-    logger 3 'missing first positional argument to cleanup_tmp_directory()'
+    logger 3 'missing first positional argument to cleanupTempDirectory()'
     exit 1
   fi
 
-  [ -d "$HOME/Downloads/$1" ] && rm -rf $HOME/Downloads/$1
-)}
+  if [ ! -d "$HOME/Downloads/$1" ];
+    logger 3 '$HOME/Downloads/$1: No such file or directory'
+    logger 5 'exiting... '
+    exit 1
+  fi
+  logger 5 'cleaning up $HOME/Downloads/$1'
+  rm -rf "$HOME/Downloads/$1"
+  if [ "$?" -ne 0 ]; then
+    logger 3 'failed to remove $HOME/Downloads/$1'
+    logger 5 'please try to remove $HOME/Downloads/$1 manually'
+    logger 5 'exiting ...'
+    exit 1
+  fi
+  logger 5 'cleanup successfull :)'
+  return 0
+}
 
 logger 6 'setting up tmp directory...'
-setup_tmp_directory $tmpDirectoryName
+setTempDirectoryName 'zellij-temp'
 logger 6 'tmp directory setup successful...'
 
 logger 6 'changing to tmp directory'
 cd $HOME/Downloads/$tmpDirectoryName
 logger 6 'working from $PWD'
 logger 6 'downloading zellij'
-wget -q https://github.com/zellij-org/zellij/releases/download/v0.37.2/zellij-x86_64-unknown-linux-musl.tar.gz
+pkg=$(wget -nv https://github.com/zellij-org/zellij/releases/download/v0.37.2/zellij-x86_64-unknown-linux-musl.tar.gz 2>&1 | cut -d\" -f2)
 [ $? -eq 0 ] && logger 6 'download successful...'
 
 # remove existing install
@@ -265,7 +303,7 @@ logger 5 'removing existing installation of zellij'
 
 # unzip and install zellij
 logger 6 'unzipping zellij'
-tar -xvf zellij-x86_64-unknown-linux-musl.tar.gz
+tar -xvf "$pkg"
 [ $? -eq 0 ] && logger 6 'unzip successful...'
 logger 6 'changing permissions for zellij binary'
 chmod +x zellij
@@ -276,6 +314,6 @@ sudo cp zellij /usr/local/bin/
 [ -f "/usr/local/bin/zellij" ] && logger 6 'zellij is installed in $(which zellij)'
 
 logger 5 'cleaning up installation...'
-cleanup_tmp_directory $tmpDirectoryName
+cleanupTempDirectory $tempDirectoryName
 [ $? -eq 0 ] && logger 6 'clean up successful...'
 logger 6 'Bye... :)'

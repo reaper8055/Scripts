@@ -23,7 +23,7 @@ mkShell {
   ];
   shellHook = ''
     export GIT_CONFIG_NOSYSTEM=true
-    export GIT_CONFIG_SYSTEM="$HOME/Projects/zeals-co-ltd/configs/git/github_global"
-    export GIT_CONFIG_GLOBAL="$HOME/Projects/zeals-co-ltd/configs/git/github_global"
+    export GIT_CONFIG_SYSTEM="$HOME/Projects/git/config/github_global"
+    export GIT_CONFIG_GLOBAL="$HOME/Projects/git/config/github_global"
   '';
 }
