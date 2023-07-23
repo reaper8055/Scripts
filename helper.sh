@@ -172,7 +172,7 @@ function customLogger() {
 # stdout. It can be any string and it **should not** end with a new line
 # characther "\n".
 # usage:
-#     logger 4 "successfull something"
+#     logger 4 'successfull something'
 function logger() {
   # fail if positional argument either $1 or $2 are not provided.
   if [ -z "$1" ]; then
@@ -265,7 +265,7 @@ function cleanupTempDirectory() {
     exit 1
   fi
 
-  if [ ! -d "$HOME/Downloads/$1" ];
+  if [ ! -d "$HOME/Downloads/$1" ]; then
     logger 3 '$HOME/Downloads/$1: No such file or directory'
     logger 5 'exiting... '
     exit 1
