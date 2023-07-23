@@ -103,7 +103,7 @@ function resetColors() {
 function catch() {
   if [ "$1" != "0" ]
   then
-    printf "${Red}[ERROR]: ${White}Error ${BRed}%s ${White}occurred on ${BRed}%s\n" "$1" "$2"
+    printf "${Red}[ERROR]: ${White}Error ${Red}%s ${White}occurred on ${Red}%s\n" "$1" "$2"
     resetColors
   fi
 }
@@ -133,19 +133,19 @@ function catch() {
 # line 3 to 74.
 function customLogger() {
   if [ -z "$1" ]; then
-    printf "${BRed}[ERROR]: ${White}missing first positional argument to customLogger(): ${Red}%s\n" '$1 is empty'
+    printf "${Red}[ERROR]: ${White}missing first positional argument to customLogger(): ${Red}%s\n" '$1 is empty'
     resetColors
     exit 1
   fi
 
   if [ -z "$2" ]; then
-    printf "${BRed}[ERROR]: ${White}missing second positional argument to customLogger(): ${Red}%s\n" '$2 is empty'
+    printf "${Red}[ERROR]: ${White}missing second positional argument to customLogger(): ${Red}%s\n" '$2 is empty'
     resetColors
     exit 1
   fi
 
   if [ -z "$3" ]; then
-    printf "${BYellow}[WARN]: ${White}missing third positional argument to customLogger(): ${Yellow}%s\n" '$3 is empty'
+    printf "${Yellow}[WARN]: ${White}missing third positional argument to customLogger(): ${Yellow}%s\n" '$3 is empty'
     resetColors
     severityLevelColor="$White"
   else
@@ -153,7 +153,7 @@ function customLogger() {
   fi
 
   if [ -z "$4" ]; then
-    printf "${BYellow}[WARN]: ${White}missing forth positional argument to customLogger(): ${Yellow}%s\n" '$4 is empty'
+    printf "${Yellow}[WARN]: ${White}missing forth positional argument to customLogger(): ${Yellow}%s\n" '$4 is empty'
     resetColors
     msgColor="$BWhite"
   else
@@ -190,13 +190,13 @@ function customLogger() {
 function logger() {
   # fail if positional argument either $1 or $2 are not provided.
   if [ -z "$1" ]; then
-    printf "${BRed}[ERROR]: ${White}missing first positional argument for logger(): ${Red}%s\n" '$1 is empty'
+    printf "${Red}[ERROR]: ${White}missing first positional argument for logger(): ${Red}%s\n" '$1 is empty'
     resetColors
     exit 1
   fi
 
   if [ -z "$2" ]; then
-    printf "${BRed}[ERROR]: ${White}missing second positional argument to logger(): ${Red}%s\n" '$2 is empty'
+    printf "${Red}[ERROR]: ${White}missing second positional argument to logger(): ${Red}%s\n" '$2 is empty'
     resetColors
     exit 1
   fi
@@ -206,11 +206,11 @@ function logger() {
 
   case $severityLevel in
     'ERROR'|'3')
-      printf "${BRed}[ERROR]: ${White}%s\n" "$msg"
+      printf "${Red}[ERROR]: ${White}%s\n" "$msg"
       resetColors
       ;;
     'WARN'|'4')
-      printf "${BYellow}[WARN]: ${White}%s\n" "$msg"
+      printf "${Yellow}[WARN]: ${White}%s\n" "$msg"
       resetColors
       ;;
     'NOTICE'|'5')
@@ -218,7 +218,7 @@ function logger() {
       resetColors
       ;;
     'INFO'|'6')
-      printf "${BGreen}[INFO]: ${White}%s\n" "$msg"
+      printf "${Green}[INFO]: ${White}%s\n" "$msg"
       resetColors
       ;;
     'DEBUG'|'7')
@@ -264,7 +264,8 @@ function setupTempDirectory() {
     logger 5 "successfully removed existing temp directory: $HOME/Downloads/$1"
   fi
   logger 5 "Creating new temp directory: $HOME/Downloads/$1"
-  if [ ! "${mkdir $HOME/Downloads/$1}" ]; then
+  mkdir "$HOME/Downloads/$1"
+  if [ "$?" -ne 0 ]; then
     logger 3 "failed creating temporary directory: $HOME/Downloads/$1"
     exit 1
   fi
@@ -283,7 +284,8 @@ function cleanupTempDirectory() {
     exit 1
   fi
   logger 5 "cleaning up $HOME/Downloads/$1"
-  if [ ! "${rm -rf $HOME/Downloads/$1}" ]; then
+  rm -rf "$HOME/Downloads/$1"
+  if [ "$?" -ne 0 ]; then
     logger 3 "failed to remove $HOME/Downloads/$1"
     logger 5 "please try to remove $HOME/Downloads/$1 manually"
     logger 5 "exiting ..."
@@ -312,7 +314,8 @@ function install() {
     logger 5 "$1 is not a .deb file"
     logger 4 "$1 is not installed!"
     logger 5 "installing $1 ..."
-    if [ ! "${sudo apt-get install $1}" ]; then
+    sudo apt-get install "$1"
+    if [ "$?" -ne 0 ]; then
       logger 3 "failed to installed $1"
       logger 5 "exiting ..."
       exit 1
@@ -329,7 +332,8 @@ function install() {
   fi
 
   logger 5 "Installing $1"
-  if [ ! "${sudo apt-get install ./$1}" ]; then
+  sudo apt-get install "./$1"
+  if [ "$?" -ne 0 ]; then
     logger 3 "failed to installed $1"
     logger 5 "exiting ..."
     exit 1

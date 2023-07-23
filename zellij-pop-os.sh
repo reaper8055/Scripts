@@ -4,6 +4,7 @@ source <(curl -sSL "https://raw.githubusercontent.com/reaper8055/scripts/main/he
 
 logger 6 'setting up tmp directory...'
 setTempDirectoryName 'zellij-temp'
+setupTempDirectory "$tempDirectoryName"
 logger 6 'tmp directory setup successful...'
 
 logger 6 'changing to tmp directory'
