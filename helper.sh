@@ -238,11 +238,10 @@ function setupTempDirectory() {
     exit 1
   fi
 
-  cd $HOME/Downloads
+  cd "$HOME/Downloads"
   logger 5 'removing existing temp directory if any'
   if [ -d "$HOME/Downloads/$1" ]; then 
-    rm -rf "$HOME/Downloads/$1"
-    if [ "$?" -ne 0 ]; then
+    if  [ ! "${rm -rf $HOME/Downloads/$1}" ]; then
       logger 3 'unable to remove existing temp directory: $HOME/Downloads/$1'
       logger 5 'please remove the directory manually and run the script again!'
       logger 5 'exiting'
@@ -251,8 +250,7 @@ function setupTempDirectory() {
     logger 5 'successfully removed existing temp directory: $HOME/Downloads/$1'
   fi
   logger 5 'Creating new temp directory: $HOME/Downloads/$1'
-  mkdir "$HOME/Downloads/$1"
-  if [ "$?" -ne 0 ]; then
+  if [ ! "${mkdir $HOME/Downloads/$1}" ]; then
     logger 3 'failed creating temporary directory: $HOME/Downloads/$1'
     exit 1
   fi
@@ -271,8 +269,7 @@ function cleanupTempDirectory() {
     exit 1
   fi
   logger 5 'cleaning up $HOME/Downloads/$1'
-  rm -rf "$HOME/Downloads/$1"
-  if [ "$?" -ne 0 ]; then
+  if [ ! "${rm -rf $HOME/Downloads/$1}" ]; then
     logger 3 'failed to remove $HOME/Downloads/$1'
     logger 5 'please try to remove $HOME/Downloads/$1 manually'
     logger 5 'exiting ...'
@@ -301,8 +298,7 @@ function install() {
     logger 5 '$1 is not a .deb file'
     logger 4 '$1 is not installed!'
     logger 5 'installing $1 ...'
-    sudo apt-get install "$1"
-    if [ "$?" -ne 0 ]; then 
+    if [ ! "${sudo apt-get install $1}" ]; then
       logger 3 'failed to installed $1'
       logger 5 'exiting ...'
       exit 1
@@ -319,8 +315,7 @@ function install() {
   fi
 
   logger 5 'Installing $1'
-  sudo apt-get install "./$1"
-  if [ "$?" -ne 0 ]; then
+  if [ ! "${sudo apt-get install ./$1}" ]; then
     logger 3 'failed to installed $1'
     logger 5 'exiting ...'
     exit 1
