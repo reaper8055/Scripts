@@ -17,7 +17,7 @@ function installPkgs() {
   fi
   logger 5 'Download successfull ... :)'
   logger 5 'Installing...'
-  install $pkg
+  install "$pkg"
 
   # Brave Browser
   sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
